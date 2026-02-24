@@ -1010,7 +1010,11 @@ function goTo(n){
   document.getElementById(SECTIONS[n]).classList.add('active');
   document.getElementById('dot'+n).classList.add('active');
   document.getElementById('dot'+n).classList.remove('done');
-  window.scrollTo({top:0,behavior:'smooth'});
+  const sectionEl = document.getElementById(SECTIONS[n]);
+  setTimeout(()=>{
+    const offset = sectionEl.getBoundingClientRect().top + window.scrollY - 70;
+    window.scrollTo({top: offset, behavior:'smooth'});
+  }, 50);
   if(n===6){ document.getElementById('finalStars').textContent=stars; }
 }
 
