@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diana's Lesson 2 — I Can! ⭐</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #FF6B9D;
+    --yellow: #FFD93D;
+    --purple: #A855F7;
+    --green: #4ADE80;
+    --blue: #38BDF8;
+    --orange: #FB923C;
+    --bg: #FFF5FB;
+    --dark: #2D1B4E;
+    --card-bg: #FFFFFF;
+    --radius: 20px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ====== STARS FLOATING BG ====== */
+  .bg-stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    overflow: hidden;
+  }
+  .bg-star {
+    position: absolute;
+    font-size: 1.2rem;
+    opacity: 0.15;
+    animation: floatStar linear infinite;
+  }
+
+  @keyframes floatStar {
+    0%   { transform: translateY(110vh) rotate(0deg); }
+    100% { transform: translateY(-10vh) rotate(360deg); }
+  }
+
+  /* ====== NAV PROGRESS ====== */
+  .top-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: white;
+    box-shadow: 0 2px 20px rgba(168,85,247,0.15);
+    padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .top-bar h1 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    color: var(--purple);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stars-counter {
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 4px 14px;
+    border-radius: 30px;
+    box-shadow: 0 3px 10px rgba(255,160,0,0.35);
+    letter-spacing: 1px;
+  }
+  .progress-steps {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .step-dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #E9D5FF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 800; color: var(--purple);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+  }
+  .step-dot.active {
+    background: var(--purple);
+    color: white;
+    transform: scale(1.2);
+    border-color: var(--pink);
+  }
+  .step-dot.done {
+    background: var(--green);
+    color: white;
+  }
+
+  /* ====== SECTIONS ====== */
+  .section {
+    display: none;
+    min-height: calc(100vh - 60px);
+    padding: 30px 20px 60px;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .section.active { display: block; }
+
+  /* ====== SECTION TITLE ====== */
+  .section-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 4px 14px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  h2 {
+    font-family: 'Baloo 2', cursive;
+    font-size: 2rem;
+    line-height: 1.2;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .subtitle {
+    font-size: 1rem;
+    color: #7C6D8C;
+    margin-bottom: 28px;
+    line-height: 1.5;
+  }
+
+  /* ====== WELCOME SCREEN ====== */
+  #s0 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 60px;
+  }
+  #s0.active { display: flex; }
+  .welcome-avatar {
+    font-size: 6rem;
+    animation: bounce 1s ease infinite alternate;
+    margin-bottom: 10px;
+  }
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-18px); }
+  }
+  .welcome-title {
+    font-family: 'Baloo 2', cursive;
+    font-size: 3rem;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  .welcome-sub {
+    font-size: 1.2rem;
+    color: #7C6D8C;
+    margin-bottom: 32px;
+    max-width: 400px;
+  }
+  .lesson-tag {
+    background: var(--yellow);
+    color: var(--dark);
+    font-weight: 800;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-size: 1rem;
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  /* ====== BUTTONS ====== */
+  .btn {
+    display: inline-block;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 12px 36px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn:hover { transform: scale(1.06); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    color: white;
+    box-shadow: 0 6px 20px rgba(168,85,247,0.4);
+  }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green), #16A34A);
+    color: white;
+    box-shadow: 0 6px 20px rgba(74,222,128,0.4);
+  }
+  .btn-yellow {
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: white;
+    box-shadow: 0 6px 20px rgba(251,146,60,0.3);
+  }
+  .btn-outline {
+    background: white;
+    color: var(--purple);
+    border: 2px solid var(--purple);
+  }
+  .btn + .btn { margin-left: 10px; }
+
+  /* ====== LIKE CARDS (Warm-up) ====== */
+  .like-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .like-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 18px 10px;
+    text-align: center;
+    cursor: pointer;
+    border: 3px solid #E9D5FF;
+    transition: all 0.25s;
+    user-select: none;
+  }
+  .like-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(168,85,247,0.2); }
+  .like-card.selected {
+    border-color: var(--pink);
+    background: #FFF0F7;
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(255,107,157,0.3);
+  }
+  .like-card .emoji { font-size: 2.4rem; margin-bottom: 6px; display: block; }
+  .like-card .word { font-weight: 700; font-size: 0.9rem; color: var(--dark); }
+  .like-card .phrase { font-size: 0.75rem; color: var(--pink); font-weight: 600; display: none; }
+  .like-card.selected .phrase { display: block; }
+
+  /* ====== VERB CARDS ====== */
+  .verbs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+  }
+  .verb-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 12px 14px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    border: 3px solid transparent;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .verb-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 5px;
+  }
+  .verb-card:nth-child(1)::before { background: var(--pink); }
+  .verb-card:nth-child(2)::before { background: var(--yellow); }
+  .verb-card:nth-child(3)::before { background: var(--blue); }
+  .verb-card:nth-child(4)::before { background: var(--green); }
+  .verb-card:nth-child(5)::before { background: var(--purple); }
+  .verb-card:nth-child(6)::before { background: var(--orange); }
+  .verb-card:nth-child(7)::before { background: var(--pink); }
+  .verb-card:nth-child(8)::before { background: var(--blue); }
+  .verb-card:nth-child(9)::before { background: var(--green); }
+  .verb-card .v-emoji { font-size: 2.8rem; margin-bottom: 8px; display: block; animation: none; }
+  .verb-card:hover .v-emoji { animation: wiggle 0.5s ease; }
+  .verb-card .v-word { font-family: 'Baloo 2', cursive; font-size: 1.1rem; font-weight: 700; color: var(--dark); }
+  .verb-card .v-sentence { font-size: 0.8rem; color: var(--purple); font-weight: 600; margin-top: 4px; opacity: 0; transition: opacity 0.3s; }
+  .verb-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.12); border-color: var(--purple); }
+  .verb-card:hover .v-sentence { opacity: 1; }
+  .verb-card.flipped { border-color: var(--pink); background: #FFF0F7; }
+  .verb-card.flipped .v-sentence { opacity: 1; color: var(--pink); }
+  @keyframes wiggle {
+    0%,100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+  }
+
+  /* ====== SENTENCE BUILDER ====== */
+  .builder-area {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    min-height: 80px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    border: 3px dashed #E9D5FF;
+  }
+  .builder-placeholder {
+    color: #C4B5D0;
+    font-size: 1rem;
+    font-style: italic;
+  }
+  .word-tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .token {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.05rem;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(168,85,247,0.3);
+    user-select: none;
+  }
+  .token:hover { transform: scale(1.08) translateY(-2px); }
+  .token.used { opacity: 0.35; cursor: default; pointer-events: none; }
+  .token.in-sentence {
+    background: linear-gradient(135deg, var(--green), #16A34A);
+    box-shadow: 0 4px 12px rgba(74,222,128,0.4);
+    cursor: pointer;
+  }
+  .sentence-result {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.4rem;
+    text-align: center;
+    padding: 16px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    display: none;
+  }
+  .sentence-result.correct {
+    background: #F0FFF4;
+    border: 3px solid var(--green);
+    color: #16A34A;
+    display: block;
+  }
+  .sentence-result.wrong {
+    background: #FFF0F0;
+    border: 3px solid #F87171;
+    color: #DC2626;
+    display: block;
+  }
+
+  /* ====== CAN / CANT GAME ====== */
+  .can-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .can-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    border: 3px solid transparent;
+    transition: all 0.25s;
+  }
+  .can-card .emoji { font-size: 2.5rem; margin-bottom: 8px; display: block; }
+  .can-card .word { font-weight: 800; font-size: 1rem; }
+  .can-card:hover { transform: scale(1.04); }
+  .can-card.can-yes { border-color: var(--green); background: #F0FFF4; }
+  .can-card.can-no  { border-color: #F87171;   background: #FFF0F0; opacity: 0.6; }
+
+  .can-sentence-display {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.5rem;
+    text-align: center;
+    min-height: 50px;
+    color: var(--purple);
+    margin-bottom: 20px;
+  }
+
+  /* ====== SUPERHERO ====== */
+  .hero-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .hero-figure {
+    font-size: 5rem;
+    animation: heroFloat 2s ease-in-out infinite alternate;
+  }
+  @keyframes heroFloat {
+    from { transform: translateY(0) rotate(-3deg); }
+    to   { transform: translateY(-20px) rotate(3deg); }
+  }
+  .hero-speech {
+    background: white;
+    border: 3px solid var(--yellow);
+    border-radius: 20px;
+    padding: 16px 24px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.4rem;
+    color: var(--dark);
+    text-align: center;
+    position: relative;
+    min-width: 280px;
+    min-height: 60px;
+  }
+  .hero-speech::before {
+    content: '';
+    position: absolute;
+    bottom: -18px; left: 50%;
+    transform: translateX(-50%);
+    border: 9px solid transparent;
+    border-top-color: var(--yellow);
+  }
+  .powers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    width: 100%;
+    max-width: 480px;
+    margin-top: 20px;
+  }
+  .power-btn {
+    background: white;
+    border: 3px solid #E9D5FF;
+    border-radius: var(--radius);
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+  }
+  .power-btn:hover { border-color: var(--purple); transform: scale(1.05); }
+  .power-btn.active { border-color: var(--yellow); background: #FFFBEB; transform: scale(1.05); }
+  .power-btn .p-emoji { font-size: 2rem; display: block; margin-bottom: 4px; }
+  .power-btn .p-text { font-size: 0.8rem; color: var(--dark); }
+  .hero-powers-display {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.05rem;
+    color: var(--orange);
+    text-align: center;
+    margin-top: 10px;
+    min-height: 30px;
+    font-weight: 700;
+  }
+
+  /* ====== DIALOGUE ====== */
+  .dialogue-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+  }
+  .chat-bubble {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+  }
+  .chat-bubble.right {
+    flex-direction: row-reverse;
+  }
+  .chat-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    background: #F3E8FF;
+  }
+  .chat-bubble.right .chat-avatar { background: #FFF0F7; }
+  .bubble-text {
+    background: #F3E8FF;
+    border-radius: 18px 18px 18px 4px;
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    max-width: 260px;
+  }
+  .chat-bubble.right .bubble-text {
+    background: #FFF0F7;
+    border-radius: 18px 18px 4px 18px;
+    color: var(--pink);
+  }
+  .dialogue-question {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.6rem;
+    color: var(--purple);
+    text-align: center;
+    margin-bottom: 20px;
+    min-height: 50px;
+  }
+  .answer-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .answer-btn {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.2rem;
+    padding: 14px 36px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 700;
+  }
+  .answer-btn:hover { transform: scale(1.08); }
+  .answer-btn.yes {
+    background: linear-gradient(135deg, var(--green), #16A34A);
+    color: white;
+    box-shadow: 0 6px 20px rgba(74,222,128,0.4);
+  }
+  .answer-btn.no {
+    background: linear-gradient(135deg, #F87171, #DC2626);
+    color: white;
+    box-shadow: 0 6px 20px rgba(248,113,113,0.4);
+  }
+  .feedback-msg {
+    text-align: center;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.4rem;
+    min-height: 50px;
+    transition: all 0.3s;
+  }
+
+  /* ====== FINAL SCREEN ====== */
+  #s5 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+  }
+  #s5.active { display: flex; }
+  .trophy { font-size: 6rem; animation: spin 2s ease-in-out; }
+  @keyframes spin {
+    0% { transform: scale(0) rotate(-180deg); }
+    70% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .confetti-row {
+    font-size: 2rem;
+    letter-spacing: 8px;
+    margin: 12px 0;
+    animation: shimmer 1.5s infinite alternate;
+  }
+  @keyframes shimmer {
+    from { opacity: 0.7; }
+    to   { opacity: 1; }
+  }
+  .final-stars {
+    font-size: 2rem;
+    font-family: 'Baloo 2', cursive;
+    color: var(--orange);
+    font-weight: 800;
+    margin: 16px 0;
+  }
+
+  /* ====== FEEDBACK TOAST ====== */
+  .toast {
+    position: fixed;
+    top: 80px; left: 50%;
+    transform: translateX(-50%) translateY(-120px);
+    background: var(--green);
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.2rem;
+    padding: 12px 28px;
+    border-radius: 40px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    z-index: 999;
+    transition: transform 0.4s cubic-bezier(.34,1.56,.64,1);
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.bad { background: #F87171; }
+
+  /* ====== PUZZLE ====== */
+  .puzzle-container {
+    background: white;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    margin-bottom: 24px;
+  }
+  .puzzle-slots {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 20px;
+    min-height: 60px;
+    align-items: center;
+    border-bottom: 3px dashed #E9D5FF;
+    padding-bottom: 16px;
+  }
+  .puzzle-slot {
+    min-width: 80px;
+    height: 48px;
+    border: 3px dashed #C4B5D0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #C4B5D0;
+    transition: all 0.2s;
+  }
+  .puzzle-slot.filled {
+    border-color: var(--purple);
+    background: #F3E8FF;
+    color: var(--purple);
+  }
+  .puzzle-words {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .puzzle-word {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(56,189,248,0.35);
+  }
+  .puzzle-word:hover { transform: scale(1.08); }
+  .puzzle-word.used { opacity: 0.3; pointer-events: none; }
+
+  /* ====== NAVIGATION BOTTOM ====== */
+  .nav-bottom {
+    margin-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* ====== INFO BOX ====== */
+  .info-box {
+    background: linear-gradient(135deg, #F3E8FF, #FFF0F7);
+    border: 2px solid #E9D5FF;
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  .info-box .highlight {
+    font-family: 'Baloo 2', cursive;
+    font-size: 1.3rem;
+    color: var(--purple);
+    font-weight: 700;
+  }
+  .info-box .neg { color: var(--pink); }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 520px) {
+    h2 { font-size: 1.5rem; }
+    .welcome-title { font-size: 2.2rem; }
+    .verbs-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating BG -->
+<div class="bg-stars" id="bgStars"></div>
+
+<!-- Toast -->
+<div class="toast" id="toast">⭐ Great job!</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <h1>🌟 Diana's Lesson 2</h1>
+  <div class="progress-steps" id="progressSteps"></div>
+  <div class="stars-counter">⭐ <span id="starCount">0</span></div>
+</div>
+
+<!-- =================== SECTION 0: WELCOME =================== -->
+<section class="section active" id="s0">
+  <div class="welcome-avatar">🧚‍♀️</div>
+  <div class="welcome-title">Hi, Diana! 👋</div>
+  <p class="welcome-sub">Today we're going to learn something super cool. Get ready for a magical lesson!</p>
+  <div class="lesson-tag">📚 Lesson 2 — I CAN!</div>
+  <p class="subtitle" style="margin-bottom:28px">You will learn how to talk about your superpowers and amazing abilities! 🦸‍♀️</p>
+  <button class="btn btn-primary" onclick="goTo(1)">Let's Start! 🚀</button>
+</section>
+
+<!-- =================== SECTION 1: WARM-UP (I like) =================== -->
+<section class="section" id="s1">
+  <span class="section-badge">🔥 Warm Up</span>
+  <h2>Do you remember?<br>I like… 💖</h2>
+  <p class="subtitle">Tap on the things you like! Diana, what makes you happy?</p>
+  <div class="like-grid">
+    <div class="like-card" onclick="toggleLike(this,'cats')">
+      <span class="emoji">🐱</span>
+      <div class="word">Cats</div>
+      <div class="phrase">I like cats!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'dancing')">
+      <span class="emoji">💃</span>
+      <div class="word">Dancing</div>
+      <div class="phrase">I like dancing!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'ice cream')">
+      <span class="emoji">🍦</span>
+      <div class="word">Ice cream</div>
+      <div class="phrase">I like ice cream!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'flowers')">
+      <span class="emoji">🌸</span>
+      <div class="word">Flowers</div>
+      <div class="phrase">I like flowers!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'music')">
+      <span class="emoji">🎵</span>
+      <div class="word">Music</div>
+      <div class="phrase">I like music!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'drawing')">
+      <span class="emoji">🎨</span>
+      <div class="word">Drawing</div>
+      <div class="phrase">I like drawing!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'swimming')">
+      <span class="emoji">🏊‍♀️</span>
+      <div class="word">Swimming</div>
+      <div class="phrase">I like swimming!</div>
+    </div>
+    <div class="like-card" onclick="toggleLike(this,'books')">
+      <span class="emoji">📖</span>
+      <div class="word">Books</div>
+      <div class="phrase">I like books!</div>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="goTo(0)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Next ✨</button>
+  </div>
+</section>
+
+<!-- =================== SECTION 2: NEW VERBS =================== -->
+<section class="section" id="s2">
+  <span class="section-badge">📖 New Words</span>
+  <h2>Amazing Action Words! 🎯</h2>
+  <p class="subtitle">Tap each card to reveal the sentence. Try to say it out loud!</p>
+  <div class="verbs-grid" id="verbsGrid">
+    <div class="verb-card" onclick="flipVerb(this,'run')">
+      <span class="v-emoji">🏃‍♀️</span>
+      <div class="v-word">run</div>
+      <div class="v-sentence">I can run!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'jump')">
+      <span class="v-emoji">🦘</span>
+      <div class="v-word">jump</div>
+      <div class="v-sentence">I can jump!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'swim')">
+      <span class="v-emoji">🏊‍♀️</span>
+      <div class="v-word">swim</div>
+      <div class="v-sentence">I can swim!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'dance')">
+      <span class="v-emoji">💃</span>
+      <div class="v-word">dance</div>
+      <div class="v-sentence">I can dance!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'sing')">
+      <span class="v-emoji">🎤</span>
+      <div class="v-word">sing</div>
+      <div class="v-sentence">I can sing!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'draw')">
+      <span class="v-emoji">🖍️</span>
+      <div class="v-word">draw</div>
+      <div class="v-sentence">I can draw!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'read')">
+      <span class="v-emoji">📚</span>
+      <div class="v-word">read</div>
+      <div class="v-sentence">I can read!</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'fly')">
+      <span class="v-emoji">🦋</span>
+      <div class="v-word">fly</div>
+      <div class="v-sentence">I can't fly! 😅</div>
+    </div>
+    <div class="verb-card" onclick="flipVerb(this,'cook')">
+      <span class="v-emoji">👩‍🍳</span>
+      <div class="v-word">cook</div>
+      <div class="v-sentence">I can cook!</div>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="goTo(1)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">I know them! 💪</button>
+  </div>
+</section>
+
+<!-- =================== SECTION 3: CONSTRUCTION + PUZZLE =================== -->
+<section class="section" id="s3">
+  <span class="section-badge">🧩 Build It</span>
+  <h2>Build the Sentence! 🔨</h2>
+  <p class="subtitle">Tap words in the right order to make a sentence!</p>
+
+  <div class="info-box">
+    <div class="highlight">✅ I can run.</div>
+    <div class="highlight neg">❌ I can't fly.</div>
+    <br>
+    <span>🚀 <b>Advanced:</b> I can run <em>fast.</em> &nbsp; I can swim <em>in the sea.</em></span>
+  </div>
+
+  <!-- PUZZLE 1 -->
+  <div class="puzzle-container" id="puzzle1">
+    <p style="font-weight:700;margin-bottom:12px;color:var(--purple)">Puzzle 1: Make: <em>"I can dance"</em> 💃</p>
+    <div class="puzzle-slots" id="slots1"></div>
+    <div class="puzzle-words" id="pwords1"></div>
+    <div class="feedback-msg" id="fb1"></div>
+  </div>
+
+  <!-- PUZZLE 2 -->
+  <div class="puzzle-container" id="puzzle2">
+    <p style="font-weight:700;margin-bottom:12px;color:var(--purple)">Puzzle 2: Make: <em>"I can't fly"</em> 🦋</p>
+    <div class="puzzle-slots" id="slots2"></div>
+    <div class="puzzle-words" id="pwords2"></div>
+    <div class="feedback-msg" id="fb2"></div>
+  </div>
+
+  <!-- PUZZLE 3 -->
+  <div class="puzzle-container" id="puzzle3">
+    <p style="font-weight:700;margin-bottom:12px;color:var(--purple)">Puzzle 3: Make: <em>"I can swim fast"</em> 🏊‍♀️</p>
+    <div class="puzzle-slots" id="slots3"></div>
+    <div class="puzzle-words" id="pwords3"></div>
+    <div class="feedback-msg" id="fb3"></div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="goTo(2)">← Back</button>
+    <button class="btn btn-primary" id="btn3Next" onclick="goTo(4)">Superhero Time! 🦸‍♀️</button>
+  </div>
+</section>
+
+<!-- =================== SECTION 4: SUPERHERO GAME =================== -->
+<section class="section" id="s4">
+  <span class="section-badge">🦸‍♀️ Super Diana</span>
+  <h2>You are a Superhero! 🌟</h2>
+  <p class="subtitle">Tap your superpowers! Diana, what can you do?</p>
+
+  <div class="hero-container">
+    <div class="hero-figure">🦸‍♀️</div>
+    <div class="hero-speech" id="heroSpeech">
+      I am Super Diana! ✨
+    </div>
+    <div class="hero-powers-display" id="heroPowers"></div>
+
+    <div class="powers-grid">
+      <button class="power-btn" onclick="togglePower(this,'fly','🚀 I can fly!')">
+        <span class="p-emoji">🚀</span>
+        <div class="p-text">fly</div>
+      </button>
+      <button class="power-btn" onclick="togglePower(this,'jump very high','⬆️ I can jump very high!')">
+        <span class="p-emoji">⬆️</span>
+        <div class="p-text">jump high</div>
+      </button>
+      <button class="power-btn" onclick="togglePower(this,'run fast','💨 I can run fast!')">
+        <span class="p-emoji">💨</span>
+        <div class="p-text">run fast</div>
+      </button>
+      <button class="power-btn" onclick="togglePower(this,'swim in the sea','🌊 I can swim in the sea!')">
+        <span class="p-emoji">🌊</span>
+        <div class="p-text">swim in sea</div>
+      </button>
+      <button class="power-btn" onclick="togglePower(this,'dance and sing','🎤 I can dance and sing!')">
+        <span class="p-emoji">🎤</span>
+        <div class="p-text">dance & sing</div>
+      </button>
+      <button class="power-btn" onclick="togglePower(this,'draw anything','🎨 I can draw anything!')">
+        <span class="p-emoji">🎨</span>
+        <div class="p-text">draw</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="goTo(3)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Dialogue Time! 💬</button>
+  </div>
+</section>
+
+<!-- =================== SECTION 5: DIALOGUE =================== -->
+<section class="section" id="s5dial">
+  <span class="section-badge">💬 Dialogue</span>
+  <h2>Can you…? 🎲</h2>
+  <p class="subtitle">Answer the questions! Be honest or imagine you're a superhero 😄</p>
+
+  <div class="dialogue-box">
+    <div class="chat-bubble">
+      <div class="chat-avatar">🐼</div>
+      <div class="bubble-text" id="dialogueQ">Can you swim? 🏊‍♀️</div>
+    </div>
+    <div class="chat-bubble right">
+      <div class="chat-avatar">🧚‍♀️</div>
+      <div class="bubble-text" id="dialogueA" style="color:var(--purple);font-style:italic">Your answer will appear here…</div>
+    </div>
+  </div>
+
+  <div class="answer-btns">
+    <button class="answer-btn yes" onclick="answerDialogue(true)">Yes, I can! ✅</button>
+    <button class="answer-btn no"  onclick="answerDialogue(false)">No, I can't! ❌</button>
+  </div>
+
+  <div class="feedback-msg" id="dialogueFb"></div>
+
+  <button class="btn btn-yellow" onclick="nextDialogueQ()" style="margin-top:10px">Next question 🎲</button>
+
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="goTo(4)">← Back</button>
+    <button class="btn btn-green" onclick="goTo(6)">Finish! 🏆</button>
+  </div>
+</section>
+
+<!-- =================== SECTION 6: FINAL =================== -->
+<section class="section" id="s6">
+  <div class="trophy">🏆</div>
+  <div class="confetti-row">🌟⭐✨🌟⭐✨🌟</div>
+  <div class="welcome-title" style="font-size:2.4rem">Amazing, Diana!</div>
+  <div class="confetti-row">🎉🎊🎉🎊🎉</div>
+  <p class="welcome-sub">You completed Lesson 2! You're a true English Superstar! 🦸‍♀️</p>
+  <div class="final-stars">⭐ Total stars: <span id="finalStars">0</span> ⭐</div>
+  <div class="info-box" style="max-width:360px;margin:20px auto 30px;text-align:left">
+    <div class="highlight">Today I learned:</div>
+    <div style="margin-top:10px;font-size:1rem;line-height:2">
+      ✅ I can run. I can dance.<br>
+      ❌ I can't fly.<br>
+      🚀 I can jump very high!<br>
+      💬 Can you sing? Yes, I can!
+    </div>
+  </div>
+  <button class="btn btn-primary" onclick="goTo(0)">Play Again! 🔄</button>
+</section>
+
+<script>
+// ============ GLOBALS ============
+let stars = 0;
+const SECTIONS = ['s0','s1','s2','s3','s4','s5dial','s6'];
+const LABELS = ['👋','🔥','📖','🧩','🦸‍♀️','💬','🏆'];
+
+// ============ BG STARS ============
+const bgEl = document.getElementById('bgStars');
+const STAR_CHARS = ['⭐','✨','🌸','💫','🌟'];
+for(let i=0;i<18;i++){
+  const s = document.createElement('div');
+  s.className='bg-star';
+  s.textContent = STAR_CHARS[Math.floor(Math.random()*STAR_CHARS.length)];
+  s.style.left = Math.random()*100+'%';
+  s.style.animationDuration = (8+Math.random()*12)+'s';
+  s.style.animationDelay = (-Math.random()*12)+'s';
+  s.style.fontSize = (0.8+Math.random()*1.2)+'rem';
+  bgEl.appendChild(s);
+}
+
+// ============ PROGRESS DOTS ============
+const psEl = document.getElementById('progressSteps');
+LABELS.forEach((lbl,i)=>{
+  const d = document.createElement('div');
+  d.className='step-dot'+(i===0?' active':'');
+  d.textContent = lbl;
+  d.title = ['Start','Warm Up','Verbs','Puzzles','Superhero','Dialogue','Finish'][i];
+  d.onclick = ()=>goTo(i);
+  d.id='dot'+i;
+  psEl.appendChild(d);
+});
+
+// ============ NAVIGATION ============
+let currentSection = 0;
+function goTo(n){
+  document.getElementById(SECTIONS[currentSection]).classList.remove('active');
+  document.getElementById('dot'+currentSection).classList.remove('active');
+  document.getElementById('dot'+currentSection).classList.add('done');
+  currentSection = n;
+  document.getElementById(SECTIONS[n]).classList.add('active');
+  document.getElementById('dot'+n).classList.add('active');
+  document.getElementById('dot'+n).classList.remove('done');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===6){ document.getElementById('finalStars').textContent=stars; }
+}
+
+// ============ TOAST ============
+function showToast(msg, bad=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast'+(bad?' bad':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function addStar(n=1){
+  stars += n;
+  document.getElementById('starCount').textContent = stars;
+}
+
+// ============ WARM-UP ============
+function toggleLike(card, word){
+  const wasSelected = card.classList.contains('selected');
+  card.classList.toggle('selected');
+  if(!wasSelected){
+    addStar(1);
+    showToast(`⭐ I like ${word}!`);
+  }
+}
+
+// ============ VERB CARDS ============
+function flipVerb(card, verb){
+  card.classList.toggle('flipped');
+  if(card.classList.contains('flipped')){
+    card.querySelector('.v-emoji').style.animation='wiggle 0.5s ease';
+    setTimeout(()=>card.querySelector('.v-emoji').style.animation='', 500);
+    addStar(1);
+    showToast(`✅ ${card.querySelector('.v-sentence').textContent}`);
+  }
+}
+
+// ============ PUZZLES ============
+const puzzles = [
+  { id:1, words:['I','can','dance'], answer:['I','can','dance'] },
+  { id:2, words:["I","can't","fly"], answer:["I","can't","fly"] },
+  { id:3, words:['fast','can','I','swim'], answer:['I','can','swim','fast'] },
+];
+
+puzzles.forEach(p=>{
+  const slotsEl = document.getElementById('slots'+p.id);
+  const wordsEl = document.getElementById('pwords'+p.id);
+  const fbEl    = document.getElementById('fb'+p.id);
+
+  let filled = [];
+
+  // Create slots
+  p.answer.forEach((_,i)=>{
+    const slot = document.createElement('div');
+    slot.className='puzzle-slot';
+    slot.dataset.idx=i;
+    slot.textContent='?';
+    slot.onclick=()=>{
+      if(filled.length>0){
+        // Remove last
+        const last = filled.pop();
+        document.querySelector(`#pwords${p.id} [data-word="${CSS.escape(last)}"].used`)?.classList.remove('used');
+        renderSlots(p.id, filled, p.answer, fbEl);
+      }
+    };
+    slotsEl.appendChild(slot);
+  });
+
+  // Shuffle words
+  const shuffled = [...p.words].sort(()=>Math.random()-0.5);
+  shuffled.forEach(w=>{
+    const btn = document.createElement('button');
+    btn.className='puzzle-word';
+    btn.textContent=w;
+    btn.dataset.word=w;
+    btn.onclick=()=>{
+      if(filled.length >= p.answer.length) return;
+      filled.push(w);
+      btn.classList.add('used');
+      renderSlots(p.id, filled, p.answer, fbEl);
+      if(filled.length===p.answer.length){
+        checkPuzzle(p.id, filled, p.answer, fbEl);
+      }
+    };
+    wordsEl.appendChild(btn);
+  });
+});
+
+function renderSlots(id, filled, answer, fbEl){
+  const slots = document.querySelectorAll(`#slots${id} .puzzle-slot`);
+  slots.forEach((s,i)=>{
+    if(filled[i]!==undefined){
+      s.textContent=filled[i];
+      s.classList.add('filled');
+    } else {
+      s.textContent='?';
+      s.classList.remove('filled');
+    }
+  });
+  fbEl.textContent='';
+}
+
+function checkPuzzle(id, filled, answer, fbEl){
+  const correct = filled.every((w,i)=>w===answer[i]);
+  if(correct){
+    fbEl.textContent='🎉 Perfect! '+answer.join(' ')+'!';
+    fbEl.style.color='#16A34A';
+    addStar(2);
+    showToast('🎉 Perfect sentence!');
+  } else {
+    fbEl.textContent='🤔 Try again! Tap a slot to remove a word.';
+    fbEl.style.color='#DC2626';
+    showToast('Try again! 🤔', true);
+  }
+}
+
+// ============ SUPERHERO ============
+let activePowers = [];
+function togglePower(btn, power, speech){
+  btn.classList.toggle('active');
+  if(btn.classList.contains('active')){
+    activePowers.push(power);
+    addStar(1);
+  } else {
+    activePowers = activePowers.filter(p=>p!==power);
+  }
+  if(activePowers.length===0){
+    document.getElementById('heroSpeech').textContent='I am Super Diana! ✨';
+    document.getElementById('heroPowers').textContent='';
+  } else {
+    const last = activePowers[activePowers.length-1];
+    document.getElementById('heroSpeech').textContent=
+      `I can ${last}! 💥`;
+    document.getElementById('heroPowers').textContent=
+      activePowers.map(p=>`I can ${p}!`).join(' ');
+  }
+}
+
+// ============ DIALOGUE ============
+const dialogueQs = [
+  {q:'Can you swim? 🏊‍♀️', verb:'swim'},
+  {q:'Can you fly? 🦋', verb:'fly'},
+  {q:'Can you sing? 🎤', verb:'sing'},
+  {q:'Can you run fast? 💨', verb:'run fast'},
+  {q:'Can you draw? 🖍️', verb:'draw'},
+  {q:'Can you dance? 💃', verb:'dance'},
+  {q:'Can you cook? 👩‍🍳', verb:'cook'},
+  {q:'Can you jump very high? ⬆️', verb:'jump very high'},
+];
+let dqIdx = 0;
+function nextDialogueQ(){
+  dqIdx = (dqIdx+1)%dialogueQs.length;
+  document.getElementById('dialogueQ').textContent=dialogueQs[dqIdx].q;
+  document.getElementById('dialogueA').textContent='Your answer will appear here…';
+  document.getElementById('dialogueFb').textContent='';
+}
+function answerDialogue(yes){
+  const verb = dialogueQs[dqIdx].verb;
+  const answer = yes ? `Yes, I can! 😊` : `No, I can't! 😅`;
+  const sentence = yes ? `Yes, I can ${verb}!` : `No, I can't ${verb}.`;
+  document.getElementById('dialogueA').textContent=answer;
+  document.getElementById('dialogueFb').textContent=`✨ "${sentence}"`;
+  document.getElementById('dialogueFb').style.color = yes ? '#16A34A' : 'var(--pink)';
+  addStar(1);
+  showToast(yes ? '✅ Yes, I can!' : '❌ No, I can\'t!');
+}
+</script>
+</body>
+</html>
