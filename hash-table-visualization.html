@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hash-таблицы · Contains Duplicate #217</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--surface3:#22222f;
+  --accent:#6c5ce7;--accent2:#a29bfe;--accent3:#fd79a8;--accent4:#00cec9;
+  --green:#00b894;--red:#e17055;--yellow:#fdcb6e;
+  --text:#e8e6f0;--text2:#9390a5;--text3:#5c5a6e;
+  --glow:rgba(108,92,231,0.3);--glow2:rgba(0,206,201,0.3);
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Outfit',sans-serif;overflow-x:hidden;
+  min-height:100vh;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%,rgba(108,92,231,0.08),transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%,rgba(0,206,201,0.06),transparent),
+    radial-gradient(ellipse 50% 50% at 50% 50%,rgba(253,121,168,0.04),transparent);
+}
+
+/* ── GRID BACKGROUND ── */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(108,92,231,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(108,92,231,0.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);
+}
+
+.container{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:3rem 0 2rem;position:relative}
+.badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:linear-gradient(135deg,rgba(108,92,231,0.15),rgba(0,206,201,0.1));
+  border:1px solid rgba(108,92,231,0.25);border-radius:100px;
+  padding:.4rem 1.2rem;font-size:.8rem;color:var(--accent2);
+  font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+  margin-bottom:1.5rem;
+  animation:fadeDown .8s ease both;
+}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent4);
+  box-shadow:0 0 8px var(--accent4);animation:pulse 2s infinite}
+h1{
+  font-size:clamp(2.2rem,5vw,3.8rem);font-weight:900;
+  line-height:1.1;letter-spacing:-.03em;
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent4) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:fadeDown .8s .1s ease both;
+}
+.subtitle{
+  font-size:1.1rem;color:var(--text2);margin-top:1rem;max-width:600px;
+  margin-inline:auto;line-height:1.6;
+  animation:fadeDown .8s .2s ease both;
+}
+.subtitle code{
+  background:rgba(108,92,231,0.15);border:1px solid rgba(108,92,231,0.2);
+  border-radius:4px;padding:.1em .4em;font-family:'JetBrains Mono',monospace;
+  font-size:.9em;color:var(--accent2);
+}
+
+/* ── SECTIONS ── */
+.section{margin-top:3rem;animation:fadeUp .8s ease both}
+.section-label{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.15em;color:var(--accent4);
+  margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;
+}
+.section-label::before{content:'';width:20px;height:1px;background:var(--accent4)}
+.section-title{font-size:1.6rem;font-weight:700;margin-bottom:1.5rem;color:#fff}
+
+/* ── LAYOUT ── */
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+@media(max-width:900px){.main-grid{grid-template-columns:1fr}}
+
+/* ── CODE PANEL ── */
+.code-panel{
+  background:var(--surface);border:1px solid rgba(108,92,231,0.12);
+  border-radius:16px;overflow:hidden;position:sticky;top:2rem;
+}
+.code-header{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.85rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.05);
+  background:rgba(108,92,231,0.04);
+}
+.code-dots{display:flex;gap:6px}
+.code-dots span{width:10px;height:10px;border-radius:50%}
+.code-dots span:nth-child(1){background:#e17055}
+.code-dots span:nth-child(2){background:#fdcb6e}
+.code-dots span:nth-child(3){background:#00b894}
+.code-filename{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text3);
+  margin-left:auto;
+}
+.code-body{padding:1.25rem;overflow-x:auto}
+.code-body pre{
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;
+  line-height:1.9;color:var(--text2);white-space:pre;
+}
+.code-line{
+  display:block;padding:0 .5rem;border-radius:4px;
+  transition:background .4s,color .3s;position:relative;
+}
+.code-line.active{background:rgba(108,92,231,0.12);color:#fff}
+.code-line.active::before{
+  content:'▸';position:absolute;left:-1rem;color:var(--accent);
+  animation:slideRight .3s ease;
+}
+.kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}
+.num{color:#f78c6c}.cm{color:#546e7a;font-style:italic}
+.op{color:#89ddff}.var{color:#eeffff}.bool{color:#ff5370}
+.ret{color:#c792ea}.typ{color:#ffcb6b}.brace{color:#89ddff}
+
+/* ── VISUALIZATION ── */
+.viz-panel{display:flex;flex-direction:column;gap:1.5rem}
+
+.input-array-box{
+  background:var(--surface);border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;padding:1.5rem;
+}
+.input-array-box h3{
+  font-size:.85rem;color:var(--text2);margin-bottom:1rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+}
+.array-items{display:flex;flex-wrap:wrap;gap:.5rem;min-height:48px}
+.arr-item{
+  width:48px;height:48px;display:flex;align-items:center;justify-content:center;
+  border-radius:10px;font-family:'JetBrains Mono',monospace;font-weight:600;
+  font-size:1rem;border:1px solid rgba(255,255,255,0.08);
+  background:var(--surface2);color:var(--text);
+  transition:all .5s cubic-bezier(.34,1.56,.64,1);position:relative;
+}
+.arr-item.scanning{
+  border-color:var(--accent);background:rgba(108,92,231,0.15);color:#fff;
+  box-shadow:0 0 20px var(--glow);transform:scale(1.15);
+}
+.arr-item.in-set{
+  border-color:var(--accent4);background:rgba(0,206,201,0.1);color:var(--accent4);
+}
+.arr-item.duplicate{
+  border-color:var(--accent3);background:rgba(253,121,168,0.15);color:var(--accent3);
+  box-shadow:0 0 25px rgba(253,121,168,0.3);
+  animation:shake .5s ease;
+}
+.arr-item .idx{
+  position:absolute;top:-18px;font-size:.6rem;color:var(--text3);font-weight:400;
+}
+
+/* ── HASH SET BOX ── */
+.hashset-box{
+  background:var(--surface);border:1px solid rgba(0,206,201,0.12);
+  border-radius:16px;padding:1.5rem;min-height:160px;
+}
+.hashset-box h3{
+  font-size:.85rem;color:var(--accent4);margin-bottom:1rem;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.05em;
+  display:flex;align-items:center;gap:.5rem;
+}
+.hashset-box h3 .count{
+  background:rgba(0,206,201,0.15);padding:.1rem .5rem;border-radius:100px;
+  font-size:.7rem;
+}
+.set-buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:.4rem}
+.bucket{
+  height:48px;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:600;
+  font-size:.9rem;
+  background:rgba(0,206,201,0.06);border:1px dashed rgba(0,206,201,0.15);
+  color:var(--accent4);
+  transition:all .5s cubic-bezier(.34,1.56,.64,1);
+  opacity:0;transform:scale(0);
+}
+.bucket.show{opacity:1;transform:scale(1)}
+.bucket.highlight{
+  background:rgba(108,92,231,0.15);border-color:var(--accent);
+  border-style:solid;color:var(--accent2);
+  box-shadow:0 0 15px var(--glow);
+}
+
+/* ── RESULT ── */
+.result-box{
+  border-radius:16px;padding:1.25rem 1.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  border:1px solid transparent;
+  transition:all .5s ease;
+  opacity:0;transform:translateY(10px);
+}
+.result-box.show{opacity:1;transform:translateY(0)}
+.result-box.found{
+  background:rgba(253,121,168,0.08);border-color:rgba(253,121,168,0.25);color:var(--accent3);
+}
+.result-box.not-found{
+  background:rgba(0,184,148,0.08);border-color:rgba(0,184,148,0.25);color:var(--green);
+}
+
+/* ── CONTROLS ── */
+.controls{
+  display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;
+  margin-top:1.5rem;
+}
+.btn{
+  padding:.7rem 1.5rem;border-radius:10px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:600;font-size:.85rem;
+  transition:all .3s ease;letter-spacing:.02em;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),#8b7cf7);color:#fff;
+  box-shadow:0 4px 20px var(--glow);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px var(--glow)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-secondary{
+  background:var(--surface2);color:var(--text2);
+  border:1px solid rgba(255,255,255,0.08);
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,0.15);color:var(--text)}
+.btn-small{padding:.5rem 1rem;font-size:.8rem}
+
+.speed-control{
+  display:flex;align-items:center;gap:.5rem;margin-left:auto;
+  font-size:.8rem;color:var(--text3);
+}
+.speed-control input[type=range]{
+  width:80px;accent-color:var(--accent);
+}
+
+.input-field{
+  background:var(--surface2);border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;padding:.6rem 1rem;color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:.85rem;
+  outline:none;width:260px;
+  transition:border-color .3s;
+}
+.input-field:focus{border-color:var(--accent)}
+.input-field::placeholder{color:var(--text3)}
+
+/* ── COMPLEXITY CARDS ── */
+.complexity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem}
+.complexity-card{
+  background:var(--surface);border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;padding:1.25rem;
+  transition:border-color .3s,transform .3s;
+}
+.complexity-card:hover{border-color:rgba(108,92,231,0.2);transform:translateY(-2px)}
+.complexity-card .label{font-size:.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.complexity-card .value{
+  font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;
+}
+.complexity-card .value.good{color:var(--green)}
+.complexity-card .value.warn{color:var(--yellow)}
+.complexity-card .desc{font-size:.8rem;color:var(--text2);margin-top:.4rem;line-height:1.4}
+
+/* ── COMPARISON TABLE ── */
+.comparison{
+  background:var(--surface);border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;overflow:hidden;margin-top:1rem;
+}
+.comparison table{width:100%;border-collapse:collapse}
+.comparison th{
+  text-align:left;padding:.85rem 1.25rem;font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--text3);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  background:rgba(108,92,231,0.03);
+}
+.comparison td{
+  padding:.85rem 1.25rem;font-size:.85rem;
+  border-bottom:1px solid rgba(255,255,255,0.03);color:var(--text2);
+}
+.comparison tr:last-child td{border-bottom:none}
+.comparison tr.best td{color:var(--green)}
+.comparison .mono{font-family:'JetBrains Mono',monospace;font-size:.8rem}
+
+/* ── LOG ── */
+.log-box{
+  background:var(--surface);border:1px solid rgba(255,255,255,0.06);
+  border-radius:16px;padding:1.25rem;max-height:200px;overflow-y:auto;
+}
+.log-box h3{
+  font-size:.75rem;color:var(--text3);margin-bottom:.75rem;
+  font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;
+}
+.log-entry{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  padding:.3rem 0;color:var(--text2);
+  border-bottom:1px solid rgba(255,255,255,0.02);
+  animation:fadeIn .3s ease;
+}
+.log-entry .step{color:var(--accent2);margin-right:.5rem}
+.log-entry .hl{color:var(--accent4)}
+.log-entry .dup{color:var(--accent3)}
+
+/* ── FLOATING PARTICLES ── */
+.particle{
+  position:fixed;width:3px;height:3px;border-radius:50%;
+  pointer-events:none;z-index:0;
+  animation:float linear infinite;
+}
+@keyframes float{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes shake{0%,100%{transform:translateX(0) scale(1.15)}25%{transform:translateX(-6px) scale(1.15)}75%{transform:translateX(6px) scale(1.15)}}
+@keyframes slideRight{from{transform:translateX(-8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="badge"><span class="dot"></span> Алгоритм #1 · LeetCode 217</div>
+    <h1>Contains Duplicate</h1>
+    <p class="subtitle">
+      Как <code>HashSet</code> позволяет проверить уникальность элементов массива за <code>O(n)</code> вместо <code>O(n²)</code>
+    </p>
+  </header>
+
+  <!-- CONTROLS -->
+  <div class="section" style="animation-delay:.3s">
+    <div class="section-label">Управление</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.75rem;align-items:center">
+      <input class="input-field" id="arrayInput" placeholder="Массив, напр: 1,2,3,1" value="3,7,1,9,3,5,2">
+      <button class="btn btn-primary" id="btnRun" onclick="startVisualization()">▶ Запустить</button>
+      <button class="btn btn-secondary" id="btnStep" onclick="stepOnce()">⏭ Шаг</button>
+      <button class="btn btn-secondary btn-small" onclick="loadExample('dup')">Пример с дубликатом</button>
+      <button class="btn btn-secondary btn-small" onclick="loadExample('nodup')">Без дубликата</button>
+      <button class="btn btn-secondary btn-small" onclick="loadExample('big')">Большой массив</button>
+      <div class="speed-control">
+        <span>Скорость</span>
+        <input type="range" id="speedRange" min="1" max="10" value="5">
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="section main-grid" style="animation-delay:.4s">
+
+    <!-- LEFT: Visualization -->
+    <div class="viz-panel">
+
+      <div class="input-array-box">
+        <h3>📦 Входной массив <code>nums[]</code></h3>
+        <div class="array-items" id="arrayViz"></div>
+      </div>
+
+      <div class="hashset-box">
+        <h3>⚡ HashSet <span class="count" id="setCount">0 элементов</span></h3>
+        <div class="set-buckets" id="setViz"></div>
+      </div>
+
+      <div class="result-box" id="resultBox"></div>
+
+      <div class="log-box">
+        <h3>📋 Лог выполнения</h3>
+        <div id="logEntries"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Code -->
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-filename">solution.py</span>
+      </div>
+      <div class="code-body">
+        <pre id="codeBlock"></pre>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPLEXITY -->
+  <div class="section" style="animation-delay:.5s">
+    <div class="section-label">Анализ сложности</div>
+    <div class="section-title">Почему HashSet — оптимальное решение?</div>
+
+    <div class="complexity-grid">
+      <div class="complexity-card">
+        <div class="label">Время · Hash Set</div>
+        <div class="value good">O(n)</div>
+        <div class="desc">Один проход по массиву. Каждая проверка и вставка в set — O(1) в среднем.</div>
+      </div>
+      <div class="complexity-card">
+        <div class="label">Память · Hash Set</div>
+        <div class="value warn">O(n)</div>
+        <div class="desc">В худшем случае храним все n элементов в множестве.</div>
+      </div>
+      <div class="complexity-card">
+        <div class="label">Время · Brute Force</div>
+        <div class="value" style="color:var(--red)">O(n²)</div>
+        <div class="desc">Два вложенных цикла — сравниваем каждый с каждым.</div>
+      </div>
+      <div class="complexity-card">
+        <div class="label">Время · Sort</div>
+        <div class="value warn">O(n log n)</div>
+        <div class="desc">Сортировка + один проход. Быстрее brute force, но медленнее set.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="section" style="animation-delay:.6s">
+    <div class="section-label">Сравнение подходов</div>
+    <div class="comparison">
+      <table>
+        <thead>
+          <tr><th>Метод</th><th>Время</th><th>Память</th><th>Идея</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Brute Force</td><td class="mono">O(n²)</td><td class="mono">O(1)</td><td>Два вложенных цикла</td></tr>
+          <tr><td>Сортировка</td><td class="mono">O(n log n)</td><td class="mono">O(1)*</td><td>Сортируем → проверяем соседей</td></tr>
+          <tr class="best"><td><strong>HashSet ✓</strong></td><td class="mono"><strong>O(n)</strong></td><td class="mono">O(n)</td><td>Множество для мгновенной проверки</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CODE LINES ──
+const codeLines = [
+  {code:'<span class="kw">def</span> <span class="fn">containsDuplicate</span>(<span class="var">nums</span>: <span class="typ">List</span>[<span class="typ">int</span>]) -> <span class="typ">bool</span>:', line:1},
+  {code:'    <span class="cm"># Создаём пустое множество</span>', line:2},
+  {code:'    <span class="var">seen</span> = <span class="fn">set</span>()', line:3},
+  {code:'', line:4},
+  {code:'    <span class="kw">for</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">nums</span>:', line:5},
+  {code:'        <span class="cm"># Проверяем: есть ли num в set?</span>', line:6},
+  {code:'        <span class="kw">if</span> <span class="var">num</span> <span class="kw">in</span> <span class="var">seen</span>:', line:7},
+  {code:'            <span class="cm"># Дубликат найден!</span>', line:8},
+  {code:'            <span class="ret">return</span> <span class="bool">True</span>', line:9},
+  {code:'', line:10},
+  {code:'        <span class="cm"># Добавляем num в множество</span>', line:11},
+  {code:'        <span class="var">seen</span>.<span class="fn">add</span>(<span class="var">num</span>)', line:12},
+  {code:'', line:13},
+  {code:'    <span class="cm"># Дубликатов не найдено</span>', line:14},
+  {code:'    <span class="ret">return</span> <span class="bool">False</span>', line:15},
+];
+
+const codeBlock = document.getElementById('codeBlock');
+codeLines.forEach((l,i) => {
+  const span = document.createElement('span');
+  span.className = 'code-line';
+  span.dataset.line = l.line;
+  span.innerHTML = l.code || '&nbsp;';
+  codeBlock.appendChild(span);
+});
+
+function highlightLine(n){
+  document.querySelectorAll('.code-line').forEach(el=>{
+    el.classList.toggle('active', parseInt(el.dataset.line)===n);
+  });
+}
+
+// ── STATE ──
+let nums = [];
+let isRunning = false;
+let stepResolve = null;
+let stepMode = false;
+
+function getDelay(){
+  const v = document.getElementById('speedRange').value;
+  return 1200 - v * 100;
+}
+
+function parseInput(){
+  const raw = document.getElementById('arrayInput').value;
+  return raw.split(',').map(s=>parseInt(s.trim())).filter(n=>!isNaN(n));
+}
+
+function loadExample(type){
+  const examples = {
+    dup: '3,7,1,9,3,5,2',
+    nodup: '1,2,3,4,5,6,7,8',
+    big: '5,12,3,8,15,1,9,12,7,4,11,6'
+  };
+  document.getElementById('arrayInput').value = examples[type];
+  resetViz();
+}
+
+// ── RENDER ──
+function renderArray(arr){
+  const viz = document.getElementById('arrayViz');
+  viz.innerHTML = '';
+  arr.forEach((v,i) => {
+    const el = document.createElement('div');
+    el.className = 'arr-item';
+    el.id = `arr-${i}`;
+    el.innerHTML = `<span class="idx">[${i}]</span>${v}`;
+    el.style.animation = `popIn .4s ${i*0.05}s ease both`;
+    viz.appendChild(el);
+  });
+}
+
+function renderSet(setArr){
+  const viz = document.getElementById('setViz');
+  viz.innerHTML = '';
+  setArr.forEach((v,i) => {
+    const el = document.createElement('div');
+    el.className = 'bucket show';
+    el.textContent = v;
+    el.id = `set-${v}`;
+    el.style.animation = `popIn .4s ease both`;
+    viz.appendChild(el);
+  });
+  document.getElementById('setCount').textContent = `${setArr.length} элемент${setArr.length===1?'':'ов'}`;
+}
+
+function addLog(html){
+  const log = document.getElementById('logEntries');
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = html;
+  log.prepend(entry);
+  if(log.children.length > 50) log.lastChild.remove();
+}
+
+function showResult(found, dupVal){
+  const box = document.getElementById('resultBox');
+  if(found){
+    box.className = 'result-box show found';
+    box.innerHTML = `⚠️ return <strong>True</strong> — дубликат <strong>${dupVal}</strong> найден!`;
+  } else {
+    box.className = 'result-box show not-found';
+    box.innerHTML = `✅ return <strong>False</strong> — все элементы уникальны`;
+  }
+}
+
+function resetViz(){
+  isRunning = false;
+  stepMode = false;
+  document.getElementById('resultBox').className = 'result-box';
+  document.getElementById('resultBox').innerHTML = '';
+  document.getElementById('logEntries').innerHTML = '';
+  document.getElementById('setViz').innerHTML = '';
+  document.getElementById('setCount').textContent = '0 элементов';
+  highlightLine(0);
+  const arr = parseInput();
+  renderArray(arr);
+}
+
+// ── ANIMATION ENGINE ──
+function wait(ms){
+  return new Promise(r => {
+    if(stepMode){
+      stepResolve = r;
+    } else {
+      setTimeout(r, ms);
+    }
+  });
+}
+
+function stepOnce(){
+  if(stepResolve){
+    stepResolve();
+    stepResolve = null;
+  } else {
+    stepMode = true;
+    startVisualization();
+  }
+}
+
+async function startVisualization(){
+  if(isRunning) return;
+  isRunning = true;
+  const btn = document.getElementById('btnRun');
+  btn.disabled = true;
+
+  nums = parseInput();
+  document.getElementById('logEntries').innerHTML = '';
+  document.getElementById('resultBox').className = 'result-box';
+  document.getElementById('resultBox').innerHTML = '';
+  renderArray(nums);
+
+  const seen = new Set();
+  const setArr = [];
+
+  // line 3: create set
+  highlightLine(3);
+  addLog(`<span class="step">init</span> seen = set() — создаём пустое множество`);
+  renderSet([]);
+  await wait(getDelay());
+
+  for(let i = 0; i < nums.length; i++){
+    const num = nums[i];
+
+    // line 5: for loop
+    highlightLine(5);
+    document.querySelectorAll('.arr-item').forEach(el=>el.classList.remove('scanning'));
+    const arrEl = document.getElementById(`arr-${i}`);
+    if(arrEl) arrEl.classList.add('scanning');
+    addLog(`<span class="step">i=${i}</span> Берём num = <span class="hl">${num}</span>`);
+    await wait(getDelay());
+
+    // line 7: check
+    highlightLine(7);
+    if(seen.has(num)){
+      addLog(`<span class="step">i=${i}</span> <span class="dup">${num} in seen → True! Дубликат!</span>`);
+
+      // highlight in set
+      const setEl = document.getElementById(`set-${num}`);
+      if(setEl) setEl.classList.add('highlight');
+      if(arrEl) arrEl.classList.add('duplicate');
+
+      await wait(getDelay());
+
+      // line 9
+      highlightLine(9);
+      showResult(true, num);
+      addLog(`<span class="step">done</span> <span class="dup">return True</span>`);
+      btn.disabled = false;
+      isRunning = false;
+      return;
+    }
+
+    addLog(`<span class="step">i=${i}</span> ${num} in seen → False`);
+    await wait(getDelay() * 0.6);
+
+    // line 12: add to set
+    highlightLine(12);
+    seen.add(num);
+    setArr.push(num);
+    renderSet([...setArr]);
+    if(arrEl) arrEl.classList.add('in-set');
+    addLog(`<span class="step">i=${i}</span> seen.add(<span class="hl">${num}</span>) → {${setArr.join(', ')}}`);
+    await wait(getDelay());
+  }
+
+  // line 15
+  highlightLine(15);
+  showResult(false);
+  addLog(`<span class="step">done</span> return False — дубликатов нет`);
+  btn.disabled = false;
+  isRunning = false;
+}
+
+// ── PARTICLES ──
+function createParticles(){
+  for(let i=0;i<15;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const colors = ['var(--accent)','var(--accent4)','var(--accent3)'];
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.left = Math.random()*100+'%';
+    p.style.animationDuration = (10+Math.random()*20)+'s';
+    p.style.animationDelay = (-Math.random()*20)+'s';
+    p.style.opacity = .15 + Math.random()*.2;
+    document.body.appendChild(p);
+  }
+}
+
+// ── INIT ──
+createParticles();
+resetViz();
+</script>
+
+</body>
+</html>
