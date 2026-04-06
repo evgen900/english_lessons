@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: english-lessons
   CONTAINER_NAME: english-lessons
   APP_DIR: /opt/english-lessons
-  APP_PORT: 80
+  APP_PORT: 7020
   APP_NETWORK: app
   REPO_URL: git@github.com:evgen900/english_lessons.git
   REPO_BRANCH: main
