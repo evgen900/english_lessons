@@ -1,0 +1,16 @@
+services:
+  app:
+    container_name: ${APP_CONTAINER_NAME}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT}:80"
+    networks:
+      - app
+
+networks:
+  app:
+    external: true
+    name: ${APP_NETWORK}

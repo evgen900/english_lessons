@@ -1,0 +1,59 @@
+name: Build and Deploy English Lessons
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: english-lessons
+  CONTAINER_NAME: english-lessons
+  APP_DIR: /opt/english-lessons
+  APP_PORT: 80
+  APP_NETWORK: app
+  REPO_URL: git@github.com:evgen900/english_lessons.git
+  REPO_BRANCH: main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ vars.DEPLOY_HOST }}
+          username: ${{ vars.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: ${{ vars.DEPLOY_SSH_PORT }}
+          script: |
+            set -e
+
+            if [ -d "${{ env.APP_DIR }}/.git" ]; then
+              cd "${{ env.APP_DIR }}"
+              git fetch origin "${{ env.REPO_BRANCH }}"
+              git checkout "${{ env.REPO_BRANCH }}"
+              git reset --hard "origin/${{ env.REPO_BRANCH }}"
+            else
+              mkdir -p "$(dirname "${{ env.APP_DIR }}")"
+              rm -rf "${{ env.APP_DIR }}"
+              git clone --branch "${{ env.REPO_BRANCH }}" "${{ env.REPO_URL }}" "${{ env.APP_DIR }}"
+              cd "${{ env.APP_DIR }}"
+            fi
+
+            docker network inspect "${{ env.APP_NETWORK }}" >/dev/null 2>&1 || docker network create "${{ env.APP_NETWORK }}"
+
+            cd "${{ env.APP_DIR }}"
+            docker build -t "${{ env.IMAGE_NAME }}:latest" .
+
+            docker stop "${{ env.CONTAINER_NAME }}" || true
+            docker rm "${{ env.CONTAINER_NAME }}" || true
+            docker run -d \
+              --name "${{ env.CONTAINER_NAME }}" \
+              --network "${{ env.APP_NETWORK }}" \
+              --restart unless-stopped \
+              -p "${{ env.APP_PORT }}:80" \
+              "${{ env.IMAGE_NAME }}:latest"
+
+            docker image prune -f

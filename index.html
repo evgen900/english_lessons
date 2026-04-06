@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Lessons</title>
+<link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hot:#ff2d78;
+  --sun:#ffd200;
+  --violet:#7c3aed;
+  --sky:#00d4ff;
+  --lime:#39ff14;
+  --mint:#00ffc6;
+  --bg1:#0d0630;
+  --bg2:#160a45;
+  --card:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.14);
+  --glow-hot:0 0 20px rgba(255,45,120,0.45);
+  --glow-sky:0 0 24px rgba(0,212,255,0.35);
+  --glow-sun:0 0 24px rgba(255,210,0,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:'Nunito',sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,45,120,0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(0,212,255,0.14), transparent 30%),
+    radial-gradient(circle at bottom center, rgba(57,255,20,0.08), transparent 28%),
+    linear-gradient(160deg,var(--bg1),var(--bg2));
+  color:#fff;
+  overflow-x:hidden;
+}
+.aurora{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  mix-blend-mode:screen;
+  animation:float 10s ease-in-out infinite alternate;
+}
+.blob:nth-child(1){width:360px;height:360px;left:4%;top:6%;background:rgba(255,45,120,0.28)}
+.blob:nth-child(2){width:420px;height:420px;right:6%;top:12%;background:rgba(0,212,255,0.22);animation-duration:13s}
+.blob:nth-child(3){width:360px;height:360px;left:30%;bottom:-8%;background:rgba(124,58,237,0.25);animation-duration:12s}
+.blob:nth-child(4){width:280px;height:280px;right:20%;bottom:12%;background:rgba(255,210,0,0.16);animation-duration:9s}
+@keyframes float{
+  from{transform:translate3d(0,0,0) scale(1)}
+  to{transform:translate3d(45px,-35px,0) scale(1.16)}
+}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.star{
+  position:absolute;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#fff;
+  opacity:.7;
+  animation:twinkle var(--d,3s) ease-in-out infinite alternate;
+}
+@keyframes twinkle{
+  from{transform:scale(.7);opacity:.25}
+  to{transform:scale(1.4);opacity:1}
+}
+.page{
+  position:relative;
+  z-index:1;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 20px 56px;
+}
+.shell{
+  width:min(1040px,100%);
+  display:grid;
+  gap:26px;
+}
+.hero{
+  text-align:center;
+  padding:18px 8px 6px;
+}
+.eyebrow{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.16);
+  background:rgba(255,255,255,0.06);
+  color:var(--sky);
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  font-size:.78rem;
+  margin-bottom:18px;
+}
+.title{
+  font-family:'Boogaloo',cursive;
+  font-size:clamp(3rem,8vw,5.6rem);
+  line-height:.95;
+  letter-spacing:1px;
+  margin-bottom:14px;
+  background:linear-gradient(135deg,var(--hot),var(--sun),var(--sky),var(--mint));
+  background-size:300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shift 5s linear infinite;
+}
+@keyframes shift{
+  from{background-position:0 0}
+  to{background-position:200% 0}
+}
+.subtitle{
+  max-width:700px;
+  margin:0 auto;
+  color:rgba(255,255,255,0.68);
+  font-size:1.08rem;
+  line-height:1.6;
+}
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:22px;
+}
+.card{
+  position:relative;
+  padding:26px;
+  border-radius:28px;
+  background:var(--card);
+  border:1px solid var(--border);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.32);
+  overflow:hidden;
+  min-height:320px;
+  display:flex;
+  flex-direction:column;
+}
+.card::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.08),transparent 45%);
+  pointer-events:none;
+}
+.lesson-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:max-content;
+  padding:9px 16px;
+  border-radius:999px;
+  font-family:'Fredoka One',cursive;
+  font-size:.95rem;
+  letter-spacing:.5px;
+  margin-bottom:18px;
+}
+.badge-02{background:rgba(255,210,0,0.12);border:1px solid rgba(255,210,0,0.45);color:var(--sun);box-shadow:var(--glow-sun)}
+.badge-03{background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.45);color:var(--sky);box-shadow:var(--glow-sky)}
+.icon{
+  font-size:4rem;
+  margin-bottom:14px;
+  filter:drop-shadow(0 0 18px rgba(255,255,255,0.2));
+}
+.card h2{
+  font-family:'Fredoka One',cursive;
+  font-size:2rem;
+  line-height:1.1;
+  margin-bottom:10px;
+}
+.card p{
+  color:rgba(255,255,255,0.68);
+  line-height:1.65;
+  margin-bottom:18px;
+}
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:24px;
+}
+.chip{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  font-size:.84rem;
+  font-weight:800;
+  color:rgba(255,255,255,0.82);
+}
+.spacer{flex:1}
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  min-height:56px;
+  border:none;
+  border-radius:999px;
+  text-decoration:none;
+  font-family:'Fredoka One',cursive;
+  font-size:1.08rem;
+  letter-spacing:.4px;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.btn:hover{transform:translateY(-3px) scale(1.02)}
+.btn-02{background:linear-gradient(135deg,var(--hot),#ff8c00);color:#fff;box-shadow:var(--glow-hot)}
+.btn-03{background:linear-gradient(135deg,var(--sky),var(--violet));color:#fff;box-shadow:var(--glow-sky)}
+.footer{
+  text-align:center;
+  color:rgba(255,255,255,0.48);
+  font-size:.92rem;
+  letter-spacing:.3px;
+}
+@media (max-width:640px){
+  .page{padding-top:28px}
+  .card{min-height:auto}
+  .icon{font-size:3.2rem}
+}
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true">
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+  <div class="blob"></div>
+</div>
+<div class="stars" id="stars" aria-hidden="true"></div>
+
+<main class="page">
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">English Lessons</div>
+      <h1 class="title">Choose Your Next Adventure</h1>
+      <p class="subtitle">A neon lesson hub that matches the class pages: playful, bright, and easy to open. Pick Lesson 02 or Lesson 03 to jump straight into class.</p>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <div class="lesson-badge badge-02">✨ Class 02</div>
+        <div class="icon">🧚‍♀️</div>
+        <h2>I Can!</h2>
+        <p>Practice abilities, build short sentences, and play through the same colorful superhero theme used in the lesson page.</p>
+        <div class="chips">
+          <span class="chip">Warm Up</span>
+          <span class="chip">New Words</span>
+          <span class="chip">Dialogue</span>
+        </div>
+        <div class="spacer"></div>
+        <a class="btn btn-02" href="./class_02/">Open Class 02</a>
+      </article>
+
+      <article class="card">
+        <div class="lesson-badge badge-03">⚡ Class 03</div>
+        <div class="icon">🚀</div>
+        <h2>Past Simple Adventure</h2>
+        <p>Continue with the same dark neon classroom mood and open the past simple lesson with its games, grammar tasks, and challenge flow.</p>
+        <div class="chips">
+          <span class="chip">Theory</span>
+          <span class="chip">Puzzles</span>
+          <span class="chip">Victory</span>
+        </div>
+        <div class="spacer"></div>
+        <a class="btn btn-03" href="./class_03/">Open Class 03</a>
+      </article>
+    </section>
+
+    <p class="footer">Start from the lesson hub and keep the same visual theme across the classes.</p>
+  </div>
+</main>
+
+<script>
+const stars = document.getElementById('stars');
+for (let i = 0; i < 48; i++) {
+  const star = document.createElement('span');
+  star.className = 'star';
+  star.style.left = Math.random() * 100 + '%';
+  star.style.top = Math.random() * 100 + '%';
+  star.style.opacity = 0.2 + Math.random() * 0.8;
+  star.style.transform = `scale(${0.6 + Math.random()})`;
+  star.style.setProperty('--d', (2 + Math.random() * 4).toFixed(2) + 's');
+  stars.appendChild(star);
+}
+</script>
+</body>
+</html>
