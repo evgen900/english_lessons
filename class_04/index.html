@@ -552,8 +552,28 @@ function launchConfetti(n=60){
   }
 }
 
-// ===== SPEECH (English TTS) =====
+// ===== SPEECH (pre-recorded mp3 with TTS fallback) =====
+// We bundle mp3 files in audio/ so playback works in restricted WebViews
+// (e.g. Telegram in-app browser) where speechSynthesis is unavailable.
+const audioCache = {};
 function speak(text){
+  const name = text.toLowerCase();
+  if(!audioCache[name]){
+    const a = new Audio('audio/' + name + '.mp3');
+    a.preload = 'auto';
+    audioCache[name] = a;
+  }
+  const audio = audioCache[name];
+  try {
+    audio.pause();
+    audio.currentTime = 0;
+    const p = audio.play();
+    if(p && typeof p.catch === 'function') p.catch(() => fallbackTTS(text));
+  } catch(e) {
+    fallbackTTS(text);
+  }
+}
+function fallbackTTS(text){
   if(!('speechSynthesis' in window)) return;
   try {
     window.speechSynthesis.cancel();
